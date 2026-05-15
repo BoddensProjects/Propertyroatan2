@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+.hero-image-layer {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+.hero-kenburns-idle {
+  transform: scale(1.03) translate3d(0, 0, 0);
+}
+
+.hero-kenburns-active {
+  animation: heroZoomPan 4s linear forwards;
+}
+
+@keyframes heroZoomPan {
+  from {
+    transform: scale(1.03) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.14) translate3d(0, -10px, 0);
+  }
+}
+
