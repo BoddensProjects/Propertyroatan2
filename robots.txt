@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://boddensprojects.github.io/Propertyroatan2/sitemap.xml
