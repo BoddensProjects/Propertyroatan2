@@ -1,11 +1,17 @@
+import { Link } from 'react-router-dom';
 import FadeIn from './FadeIn';
 import gabbyImage from '../assets/gabby.png';
 const agent = {
   name: 'Gavy Hernandez',
-  role: 'Licensed Realtor · RENE Certified',
-  bio: 'A licensed realtor and certified Real Estate Negotiation Expert passionate about elevating the buyer and seller experience in Roatan. She has served both international and local clients with outstanding results, and is a proud member of NAR USA, the Honduran Realtor Association, and the Roatan Realtor Association.',
+  role: 'Licensed Realtor | RENE Certified',
+  bio: 'Gavy is a Roatan native and dream catcher for clients who want to turn island ownership into reality. With over 12 combined years across licensed real estate, administrative sales, and closings, she brings local knowledge, efficient guidance, and a client-focused approach to every buyer and seller conversation.',
   image: '/images/gavy-transparent.png',
-  tags: ['NAR Member', 'RENE Certified', 'International Clients', 'Roatan Specialist'],
+  tags: [
+    'Native Roatan Advisor',
+    '12+ Combined Years',
+    'Buyer & Investor Representation',
+    'Client-Focused Guidance',
+  ],
 };
 
 export default function Agents() {
@@ -26,18 +32,18 @@ export default function Agents() {
             <div className="mb-5 inline-flex items-center gap-4">
               <span className="h-px w-10 bg-slate-400/60" />
               <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                Your Roatan Expert
+                Local Expertise
               </span>
               <span className="h-px w-10 bg-slate-400/60" />
             </div>
 
             <h2 className="mb-5 font-serif text-4xl tracking-wide text-slate-900 md:text-5xl">
-              Meet Gavy
+              Local Expertise. International Standards.
             </h2>
 
             <p className="mx-auto max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
-              Professional guidance, strong negotiation skills, and local market
-              expertise for buyers and sellers looking to invest with confidence in Roatan.
+              A relationship-based advisory approach led by a Roatan native who
+              understands the island, the process, and the dream behind each purchase.
             </p>
           </div>
         </FadeIn>
@@ -48,7 +54,7 @@ export default function Agents() {
             <div className="relative grid items-center gap-12 px-8 py-10 md:grid-cols-[1.05fr_0.95fr] md:px-14 md:py-14">
               <div className="order-2 md:order-1">
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-4 py-2 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-slate-600 backdrop-blur-md">
-                  Trusted Real Estate Advisor
+                  Roatan Real Estate Advisory
                 </div>
 
                 <h3 className="mb-2 font-serif text-3xl text-slate-900 md:text-5xl">
@@ -77,11 +83,11 @@ export default function Agents() {
                 </div>
 
                 <div className="flex flex-wrap gap-4">
-                  <a
-                    href="#contact"
+                  <Link
+                    to="/contact?intent=buyer-brief"
                     className="inline-flex items-center gap-3 rounded-full bg-slate-900 px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-white transition hover:bg-slate-800"
                   >
-                    Contact Gavy
+                    Request Consultation
                     <svg
                       width="14"
                       height="14"
@@ -94,14 +100,14 @@ export default function Agents() {
                     >
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
-                  </a>
+                  </Link>
 
-                  <a
-                    href="#listings"
+                  <Link
+                    to="/listings"
                     className="inline-flex items-center gap-3 rounded-full border border-slate-300 bg-white/60 px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-slate-700 transition hover:bg-white/80"
                   >
-                    View Listings
-                  </a>
+                    Explore Listings
+                  </Link>
                 </div>
               </div>
 
@@ -109,10 +115,10 @@ export default function Agents() {
                 <div className="relative flex w-full max-w-md items-end justify-center rounded-[2rem] border border-white/50 bg-white/30 p-6 shadow-[0_20px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl">
                   <div className="absolute inset-x-8 bottom-4 h-10 rounded-full bg-slate-900/10 blur-2xl" />
                   <img
-  src={gabbyImage}
-  alt={agent.name}
-  className="relative z-10 max-h-[34rem] w-auto object-contain drop-shadow-[0_18px_35px_rgba(15,23,42,0.22)]"
-/>
+                    src={gabbyImage}
+                    alt={agent.name}
+                    className="relative z-10 max-h-[34rem] w-auto object-contain drop-shadow-[0_18px_35px_rgba(15,23,42,0.22)]"
+                  />
 
                 </div>
               </div>

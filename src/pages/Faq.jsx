@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 
 import bgPR1 from '../assets/bgPR1.jpg';
@@ -12,23 +13,33 @@ const faqData = [
     eyebrow: 'Island Opportunity',
     headline: 'Own a piece of the Caribbean with confidence.',
     description:
-      'Roatan blends world-class natural beauty, growing tourism, and attractive property values, making it one of the most compelling real estate markets in the region.',
+      'Roatan blends natural beauty, tourism appeal, and selective property opportunities, making it a compelling market for lifestyle buyers and long-term investors.',
     image: bgPR1,
     questions: [
       {
         id: 'r1',
         q: 'Can foreigners legally own property in Roatan?',
-        a: 'Absolutely. Honduran law allows foreigners to personally own up to 3,000 square meters of land. Larger holdings are commonly handled through a Honduran corporation, which is a standard process with legal guidance.',
+        a: 'Yes, foreign buyers can purchase property in Roatan, but ownership rules can depend on land size, location, intended use, and legal structure. Individual ownership is commonly discussed around the 3,000 square meter threshold for residential property, while larger or more complex purchases may require a Honduran legal structure. Always confirm the right path with a qualified Honduran real estate attorney before making an offer.',
       },
       {
         id: 'r2',
         q: 'What makes Roatan a strong real estate investment?',
-        a: 'Roatan combines Caribbean lifestyle appeal with strong rental and appreciation potential. Tourism, direct international access, and a growing global buyer audience all help support long-term value.',
+        a: 'Roatan combines Caribbean lifestyle appeal, limited coastal inventory, tourism demand, and international buyer interest. The strongest opportunities are usually the ones with clear access, strong location fundamentals, usable infrastructure, and a realistic plan for lifestyle use, rental demand, or future development.',
       },
       {
         id: 'r3',
         q: 'What is the infrastructure like on the island?',
-        a: 'Roatan continues to improve with better roads, modern grocery stores, private healthcare, and reliable high-speed internet in many areas. It offers a much more comfortable day-to-day experience than many buyers expect.',
+        a: 'Roatan continues to improve with better roads in many corridors, modern grocery options, private healthcare, and high-speed internet available in several areas. Infrastructure still varies by neighborhood, so buyers should confirm access, utilities, water, road quality, and service providers for the specific property they are considering.',
+      },
+      {
+        id: 'r4',
+        q: 'Is Honduras politically stable?',
+        a: 'Honduras has an established legal system for property ownership, but political, legal, and regulatory conditions can change over time. International buyers should rely on current attorney guidance, proper title review, and careful due diligence rather than assumptions from any single website.',
+      },
+      {
+        id: 'r5',
+        q: 'Is it safe to live in the Bay Islands?',
+        a: 'Many residents and visitors find the Bay Islands welcoming and comfortable, but safety can vary by area and situation. Buyers relocating from abroad should visit neighborhoods in person when possible, speak with local residents, review current travel guidance, and use the same common-sense precautions they would in any destination market.',
       },
     ],
   },
@@ -43,17 +54,22 @@ const faqData = [
       {
         id: 'p1',
         q: 'What sets Property Roatan apart from other brokerages?',
-        a: 'The approach is personal, strategic, and highly local. Instead of simply opening doors, we help clients understand areas, lifestyle fit, long-term value, and the real differences between opportunities.',
+        a: 'The approach is personal, strategic, and highly local. Instead of simply opening doors, Property Roatan helps clients understand areas, lifestyle fit, long-term value, and the real differences between opportunities.',
       },
       {
         id: 'p2',
-        q: 'Do you help with the process after the sale is closed?',
+        q: 'Do you help after the sale is closed?',
         a: 'Yes. Support often continues after closing through recommendations for attorneys, contractors, property management, local services, and practical next steps for settling in or preparing a rental property.',
       },
       {
         id: 'p3',
         q: 'Can I view properties remotely?',
         a: 'Definitely. Virtual tours, video walkthroughs, neighborhood context, and remote guidance make it possible to begin confidently even if you are not on the island yet.',
+      },
+      {
+        id: 'p4',
+        q: 'Can you help me find a local attorney?',
+        a: 'Yes. Property Roatan can provide referrals to experienced real estate attorneys for title searches, corporate formations, closings, and other legal questions. If you do not speak Spanish, working with an English-speaking attorney can make the process much easier because legal documents in Honduras are prepared in Spanish.',
       },
     ],
   },
@@ -68,17 +84,127 @@ const faqData = [
       {
         id: 'b1',
         q: 'What are the standard closing costs?',
-        a: 'Closing costs in Honduras typically range around 4% to 6% of the purchase price, depending on the transaction details. This often includes transfer taxes, legal fees, and registry costs.',
+        a: 'Closing costs vary by transaction structure, property type, attorney, and whether the purchase involves a direct title transfer or a corporate structure. Buyers should budget for legal review, registration, transfer-related costs, and other closing expenses, while sellers should confirm commission and tax obligations with their attorney or tax advisor before accepting an offer.',
       },
       {
         id: 'b2',
         q: 'Is financing available for foreigners?',
-        a: 'Most transactions in Roatan are cash purchases. Traditional local financing for non-residents can be difficult, but seller financing is sometimes available and can be negotiated depending on the property.',
+        a: 'Many Roatan transactions are cash purchases. Traditional local financing for non-resident buyers can be limited, but seller financing, home-country financing, or private financing may be possible depending on the property and the parties involved. Terms should always be reviewed by an attorney before signing.',
       },
       {
         id: 'b3',
         q: 'Do I need title insurance?',
-        a: 'It is not always required, but many buyers appreciate the extra peace of mind. Proper legal review, title verification, and due diligence are essential parts of a secure purchase.',
+        a: 'Title insurance is not always required, but some buyers value the additional peace of mind. Either way, a proper title search, cadastral review, survey review, tax confirmation, and attorney-led due diligence are essential before closing.',
+      },
+      {
+        id: 'b4',
+        q: 'What does the purchase process look like step by step?',
+        a: 'The process usually starts with an offer that outlines price, timing, deposits, and conditions. After acceptance, the attorney reviews title, surveys, taxes, and closing documents before funds are moved through the agreed escrow or closing process. Exact deposit amounts, timelines, and registration timing should be confirmed for each transaction.',
+      },
+      {
+        id: 'b5',
+        q: 'What are property taxes like?',
+        a: 'Property taxes in the Bay Islands are often lower than buyers expect, but the exact amount depends on the municipality, property value, classification, and current assessment. Before closing, your attorney should confirm that taxes are current and explain the expected annual obligation.',
+      },
+    ],
+  },
+  {
+    category: 'Buyer Guide',
+    eyebrow: 'Bay Islands Buyer Info',
+    headline: 'Helpful context before purchasing in the Bay Islands.',
+    description:
+      'Buying in Roatan, Guanaja, Utila, Cayos Cochinos, or elsewhere in the Bay Islands is exciting, but the best decisions come from clear expectations, local guidance, and proper due diligence.',
+    image: bgPR1,
+    questions: [
+      {
+        id: 'g1',
+        q: 'What should Bay Islands buyers understand before starting?',
+        a: 'The Bay Islands are not a one-size-fits-all market. Ocean-view condos, beachfront homes, land, and development opportunities can each serve different goals. A strong search starts by clarifying whether you are buying for lifestyle, rental potential, relocation, long-term investment, or a future build.',
+      },
+      {
+        id: 'g2',
+        q: 'Why do buyers choose Roatan and the Bay Islands?',
+        a: 'Many buyers are drawn to the Bay Islands for Caribbean lifestyle, reef access, ocean views, island communities, and relative value compared with many other Caribbean destinations. The strongest opportunities still need to be evaluated carefully through location, access, title, infrastructure, condition, and long-term use.',
+      },
+      {
+        id: 'g3',
+        q: 'How is buying in Roatan different from buying at home?',
+        a: 'The overall idea may feel familiar: choose a property, make an offer, conduct due diligence, and close. The difference is that local attorneys, title review, surveys, municipal records, taxes, escrow timing, and island-specific procedures become especially important. Having an experienced local advisor helps make the process feel less unfamiliar.',
+      },
+      {
+        id: 'g4',
+        q: 'What professionals should be involved in a purchase?',
+        a: 'Buyers should work with a real estate advisor they trust and a qualified Honduran attorney who can review title, surveys, taxes, closing documents, ownership structure, and any corporation or residency questions. Property Roatan can provide referrals, but the final attorney choice should always be yours.',
+      },
+      {
+        id: 'g5',
+        q: 'What is the best mindset for buying in a foreign country?',
+        a: 'Here is not there. Laws, timing, customs, utilities, and service expectations can be different from what buyers know at home. Patience, good questions, and dependable local guidance are essential. The more informed you are before offering, the smoother the process tends to feel.',
+      },
+    ],
+  },
+  {
+    category: 'Cost of Living',
+    eyebrow: 'Day-to-Day Life',
+    headline: 'What to expect when you make the island your home.',
+    description:
+      'Living in Roatan is an adjustment, and an exciting one. Understanding where costs differ from home helps you plan the lifestyle you want.',
+    image: bgPR1,
+    questions: [
+      {
+        id: 'c1',
+        q: 'Is the cost of living lower than in North America?',
+        a: 'It depends heavily on your lifestyle. Imported goods can be more expensive because many items arrive by boat or air, while local produce, seafood, and island services may be more affordable. A realistic budget should separate imported comforts from local living costs.',
+      },
+      {
+        id: 'c2',
+        q: 'What should I know about electricity costs?',
+        a: 'Electricity can be higher than many newcomers expect, especially for homes using air conditioning often. Orientation, elevation, breezes, shade, appliance efficiency, and solar planning can all make a meaningful difference in monthly operating costs.',
+      },
+      {
+        id: 'c3',
+        q: 'What are internet and phone options like?',
+        a: 'Several internet and mobile providers operate on the island, and high-speed service is available in many areas. Service quality can change by neighborhood and provider, so remote workers should verify available plans, speeds, backup options, and reliability for the exact property before purchasing.',
+      },
+      {
+        id: 'c4',
+        q: 'Is health insurance available for expats?',
+        a: 'Health insurance options are available for many expats, but eligibility, coverage, exclusions, and cross-border benefits vary widely. Speak with a licensed insurance advisor before relying on any specific plan.',
+      },
+    ],
+  },
+  {
+    category: 'Residency & Legal Setup',
+    eyebrow: 'Making It Official',
+    headline: 'Understanding residency and how to structure your ownership.',
+    description:
+      'Whether you are planning to visit often or relocate permanently, understanding your legal options in Honduras helps you move forward with confidence.',
+    image: bgPR2,
+    questions: [
+      {
+        id: 'l1',
+        q: 'Do I need residency to own property in Honduras?',
+        a: 'Residency is generally not required simply to purchase property, but it may matter if you plan to live in Honduras long term, open certain bank accounts, work locally, or access specific services. Entry rules and extensions can change, so confirm current immigration requirements before planning an extended stay.',
+      },
+      {
+        id: 'l2',
+        q: 'What types of residency are available?',
+        a: 'Honduras offers several residency pathways, including options commonly discussed for retirees, investors, and people with qualifying income. Requirements, documentation, timelines, and fees change, so residency planning should be handled with a Honduran immigration attorney using current rules.',
+      },
+      {
+        id: 'l3',
+        q: 'What is a Honduran corporation and why would I need one?',
+        a: 'A Honduran corporation may be used for certain ownership structures, especially where land size, multiple owners, business use, or future transfer planning matters. It is not automatically the right choice for every buyer, so the decision should be made with an attorney who can explain setup costs, annual obligations, tax considerations, and control structure.',
+      },
+      {
+        id: 'l4',
+        q: 'Can I open a bank account on the island?',
+        a: 'It depends on the bank and your legal status, documentation, residency, and ownership structure. Some buyers work through corporate accounts, while others may need residency or additional documentation. Your attorney or banking contact can confirm the current requirements.',
+      },
+      {
+        id: 'l5',
+        q: 'Is banking in Honduras safe?',
+        a: 'Banking decisions should be made carefully, just like in any international market. Buyers should compare institutions, ask about deposit protection, understand account requirements, and speak with an attorney or financial advisor before moving significant funds.',
       },
     ],
   },
@@ -123,8 +249,8 @@ export default function Faq() {
 
             <p className="mb-7 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg md:text-xl">
               Real estate decisions feel better when the information feels calm,
-              direct, and trustworthy. This page is designed to answer the questions
-              buyers ask most before they make their next move.
+              direct, and trustworthy. This page is designed to answer common
+              questions before you make your next move.
             </p>
 
             <div className="mb-8 flex flex-wrap gap-2.5">
@@ -214,7 +340,9 @@ export default function Faq() {
 
                   <div className="grid grid-cols-3 gap-2">
                     <div className="rounded-[1rem] border border-white/10 bg-white/5 px-3 py-4 text-center backdrop-blur-xl">
-                      <p className="font-serif text-xl text-white">3</p>
+                      <p className="font-serif text-xl text-white">
+                        {faqData.length}
+                      </p>
                       <p className="mt-1 text-[0.58rem] uppercase tracking-[0.16em] text-white/55">
                         Categories
                       </p>
@@ -296,11 +424,12 @@ export default function Faq() {
 
                 <div className="mt-6 rounded-[1.35rem] bg-slate-50/90 p-4">
                   <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-slate-400">
-                    Best For
+                    Important Note
                   </p>
                   <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                    Buyers comparing areas, planning next steps, or trying to understand
-                    the island market before reaching out.
+                    This page is general guidance, not legal, tax, immigration, or
+                    financial advice. Always confirm current requirements with the
+                    right professional before making decisions.
                   </p>
                 </div>
               </motion.div>
@@ -399,7 +528,7 @@ export default function Faq() {
             </p>
 
             <h3 className="mb-4 font-serif text-2xl sm:text-3xl">
-              Let’s talk through what matters most to you.
+              Let's talk through what matters most to you.
             </h3>
 
             <p className="mx-auto mb-6 max-w-2xl text-sm leading-relaxed text-white/78 sm:text-base">

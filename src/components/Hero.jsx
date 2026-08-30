@@ -36,7 +36,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative flex h-screen items-center justify-center overflow-hidden text-center">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden text-center">
       <div className="absolute inset-0">
         {mediaItems.map((item, index) => {
           const isActive = index === activeIndex;
@@ -74,18 +74,23 @@ export default function Hero() {
           );
         })}
 
-        <div className="absolute inset-0 bg-black/45" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(15,23,42,0.18),rgba(0,0,0,0.5))]" />
+        <div className="absolute inset-0 bg-slate-950/54" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(15,23,42,0.16),rgba(2,6,23,0.28),rgba(2,6,23,0.82))]" />
       </div>
 
-      <div className="relative z-10 mx-auto mt-16 max-w-4xl px-6">
-        <h1 className="mb-6 font-serif text-5xl tracking-wide text-white drop-shadow-lg md:text-7xl">
-          Find Your Paradise in Roatan
+      <div className="relative z-10 mx-auto mt-16 max-w-6xl px-6">
+        <p className="mb-5 text-[0.68rem] font-bold uppercase tracking-[0.28em] text-white/75 sm:text-xs">
+          Luxury guidance. Local insight. Real results.
+        </p>
+
+        <h1 className="mx-auto mb-6 max-w-5xl font-serif text-5xl leading-[0.98] tracking-wide text-white drop-shadow-lg md:text-7xl lg:text-8xl">
+          Property Roatan
         </h1>
 
-        <p className="mx-auto mb-10 max-w-2xl text-lg font-light tracking-wider text-gray-100 drop-shadow-md md:text-xl">
-          Exclusive beachfront estates, luxury villas, and premier investment
-          properties in the Bay Islands.
+        <p className="mx-auto mb-10 max-w-3xl text-lg font-light leading-relaxed tracking-wide text-gray-100 drop-shadow-md md:text-xl">
+          Roatan real estate guidance for curated homes for sale, land for sale,
+          waterfront estates, condos, villas, and income-minded investment
+          properties across the Bay Islands.
         </p>
 
         <div className="flex flex-col justify-center gap-4 sm:flex-row">
@@ -93,15 +98,17 @@ export default function Hero() {
             to="/listings"
             className="bg-white px-8 py-4 text-sm font-bold uppercase tracking-widest text-gray-900 shadow-lg transition-colors hover:bg-gray-200"
           >
-            Explore Properties
+            View Exclusive Listings
           </Link>
 
-          <Link
-            to="/contact"
+          <a
+            href="https://wa.me/50432377727?text=Hi%20Gavy%2C%20I%27d%20like%20to%20request%20a%20private%20Roatan%20real%20estate%20consultation."
+            target="_blank"
+            rel="noreferrer"
             className="border border-white px-8 py-4 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-gray-900"
           >
-            Speak to an Agent
-          </Link>
+            Request Private Consultation
+          </a>
         </div>
       </div>
     </section>

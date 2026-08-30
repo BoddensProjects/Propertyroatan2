@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { AnimatePresence, motion } from 'framer-motion';
 import { allProperties } from '../data/propertiesData';
 
@@ -16,12 +18,54 @@ function formatNumber(value) {
 }
 
 function getPropertyImages(property) {
-  if (property.images?.length) return property.images;
-  if (property.image) return [property.image];
-  return [];
+  const images = Array.isArray(property.images)
+    ? property.images
+        .map((image) => (typeof image === 'string' ? image.trim() : ''))
+        .filter(Boolean)
+    : [];
+
+  if (images.length) return images;
+
+  const coverImage = typeof property.image === 'string' ? property.image.trim() : '';
+  return coverImage ? [coverImage] : [];
+}
+
+function getInvestmentHighlights(property) {
+  const highlights = [];
+
+  if (property.waterfront) {
+    highlights.push('Waterfront or coastal-positioned inventory with lifestyle scarcity.');
+  }
+
+  if (property.propertyType === 'Land') {
+    highlights.push('Land opportunity suited for custom build planning or long-term positioning.');
+  }
+
+  if (property.propertyType === 'Commercial') {
+    highlights.push('Commercial or income-oriented asset with flexible future use potential.');
+  }
+
+  if (property.sqft && property.sqft > 0) {
+    highlights.push('Built square footage that can support personal use, rental use, or resale appeal.');
+  }
+
+  highlights.push('Best evaluated through access, area fit, due diligence, and ownership goals.');
+
+  return highlights.slice(0, 3);
+}
+
+function getLocationAdvantage(property) {
+  return `${property.area} offers a distinct Roatan setting. The right fit depends on how you plan to use the property, how often you will be on island, and whether lifestyle, rental demand, privacy, or future growth matters most.`;
 }
 
 const CONTACT_EMAIL = 'info@propertyroatan.com';
+const WHATSAPP_NUMBER = '50432377727';
+
+function buildWhatsAppPropertyLink(property) {
+  const message = `Hi Gavy, I am interested in ${property.title} (MLS ${property.mls}) in ${property.area}. Could you send full details, availability, and next steps?`;
+
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
 
 function buildInquiryMailto(property, formType, formData) {
   const subject =
@@ -63,20 +107,6 @@ function PropertyCard({ property, onViewDetails }) {
   const images = getPropertyImages(property);
   const [imageIndex, setImageIndex] = useState(0);
 
-  useEffect(() => {
-    setImageIndex(0);
-  }, [property.id]);
-
-  useEffect(() => {
-    if (images.length <= 1) return undefined;
-
-    const interval = window.setInterval(() => {
-      setImageIndex((current) => (current + 1) % images.length);
-    }, 3600);
-
-    return () => window.clearInterval(interval);
-  }, [images]);
-
   const goPrev = (event) => {
     event.stopPropagation();
     setImageIndex((current) => (current - 1 + images.length) % images.length);
@@ -88,8 +118,8 @@ function PropertyCard({ property, onViewDetails }) {
   };
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-white/50 bg-white/65 shadow-[0_16px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl transition duration-500 hover:-translate-y-1">
-      <div className="relative h-56 overflow-hidden sm:h-60">
+    <article className="group flex h-full flex-col overflow-hidden rounded-[1.65rem] border border-white/60 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.1)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_24px_80px_rgba(15,23,42,0.16)]">
+      <div className="relative h-64 overflow-hidden sm:h-72">
         <AnimatePresence mode="wait">
           <motion.img
             key={images[imageIndex] || property.image}
@@ -101,6 +131,7 @@ function PropertyCard({ property, onViewDetails }) {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             className="h-full w-full object-cover"
             loading="lazy"
+            decoding="async"
           />
         </AnimatePresence>
 
@@ -124,7 +155,7 @@ function PropertyCard({ property, onViewDetails }) {
               className="absolute left-4 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-900 shadow-sm backdrop-blur-xl transition hover:bg-white"
               aria-label="Previous property image"
             >
-              <span className="text-lg leading-none">‹</span>
+              <span className="text-lg leading-none">&lt;</span>
             </button>
 
             <button
@@ -133,7 +164,7 @@ function PropertyCard({ property, onViewDetails }) {
               className="absolute right-4 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-900 shadow-sm backdrop-blur-xl transition hover:bg-white"
               aria-label="Next property image"
             >
-              <span className="text-lg leading-none">›</span>
+              <span className="text-lg leading-none">&gt;</span>
             </button>
 
             <div className="absolute bottom-20 right-4 rounded-full bg-slate-950/45 px-3 py-1 text-[0.65rem] font-bold text-white backdrop-blur-xl">
@@ -152,9 +183,13 @@ function PropertyCard({ property, onViewDetails }) {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-5">
-        <p className="mb-2 text-2xl font-semibold text-slate-900">
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <p className="mb-2 text-3xl font-semibold text-slate-900">
           {formatPrice(property.price)}
+        </p>
+
+        <p className="mb-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-slate-500">
+          {property.area} / {property.propertyType}
         </p>
 
         <p className="mb-3 line-clamp-2 text-sm leading-relaxed text-slate-600">
@@ -164,6 +199,17 @@ function PropertyCard({ property, onViewDetails }) {
         <p className="mb-5 line-clamp-2 text-sm leading-relaxed text-slate-500">
           {property.description}
         </p>
+
+        <div className="mb-5 grid gap-2">
+          {getInvestmentHighlights(property).slice(0, 2).map((highlight) => (
+            <div
+              key={highlight}
+              className="rounded-2xl border border-slate-100 bg-white px-4 py-3 text-xs leading-relaxed text-slate-600 shadow-sm"
+            >
+              {highlight}
+            </div>
+          ))}
+        </div>
 
         <div className="mb-5 grid grid-cols-2 gap-2 rounded-2xl bg-slate-50/90 p-3 text-xs text-slate-700">
           <div>
@@ -200,7 +246,7 @@ function PropertyCard({ property, onViewDetails }) {
           onClick={() => onViewDetails(property)}
           className="mt-auto w-full rounded-full bg-slate-900 px-5 py-4 text-xs font-bold uppercase tracking-[0.2em] text-white transition hover:bg-slate-800"
         >
-          View Details
+          Request Full Details
         </button>
       </div>
     </article>
@@ -208,10 +254,13 @@ function PropertyCard({ property, onViewDetails }) {
 }
 
 export default function Listings() {
-  const [search, setSearch] = useState('');
-  const [propertyType, setPropertyType] = useState('all');
-  const [area, setArea] = useState('all');
-  const [waterfrontOnly, setWaterfrontOnly] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get('search') || searchParams.get('mls') || '');
+  const [propertyType, setPropertyType] = useState(() => searchParams.get('type') || 'all');
+  const [area, setArea] = useState(() => searchParams.get('area') || 'all');
+  const [waterfrontOnly, setWaterfrontOnly] = useState(
+    () => searchParams.get('waterfront') === 'true'
+  );
   const [maxPrice, setMaxPrice] = useState(2000000);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
@@ -341,13 +390,15 @@ export default function Listings() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 text-center sm:mb-14">
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
-            Roatan Listings
+            Roatan Real Estate Opportunities
           </p>
           <h1 className="mb-5 font-serif text-4xl text-slate-900 sm:text-5xl md:text-6xl">
-            Explore Available Properties
+            Ocean-view, beachfront, and income-minded properties in the Caribbean
           </h1>
           <p className="mx-auto max-w-3xl text-base leading-relaxed text-slate-600 md:text-lg">
-            Browse current listings by area, property type, price, and waterfront access.
+            Explore curated properties through both lifestyle appeal and investment
+            logic. Request full details when a property fits your goals, and Gavy
+            can help you compare the strongest options privately.
           </p>
         </div>
 
@@ -469,7 +520,7 @@ export default function Listings() {
                     }}
                     className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/88 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-900 shadow-[0_10px_30px_rgba(15,23,42,0.12)] backdrop-blur-xl transition hover:bg-white"
                   >
-                    <span className="text-base leading-none">←</span>
+                    <span className="text-base leading-none">&lt;-</span>
                     Back
                   </button>
                 </div>
@@ -513,6 +564,10 @@ export default function Listings() {
                         {selectedProperty.address}
                       </p>
 
+                      <p className="mt-4 max-w-3xl text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        {selectedProperty.area} {selectedProperty.propertyType} / Lifestyle and investment opportunity
+                      </p>
+
                       <div className="mt-6 rounded-[1.5rem] bg-slate-950 p-3 sm:p-4">
                         <div className="relative flex h-[34vh] min-h-[18rem] items-center justify-center overflow-hidden rounded-[1.25rem] bg-slate-950 sm:h-[42vh] lg:h-[50vh]">
                           <AnimatePresence mode="wait">
@@ -536,7 +591,7 @@ export default function Listings() {
                                 className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/82 text-slate-900 shadow-sm backdrop-blur-xl transition hover:bg-white sm:left-4"
                                 aria-label="Previous image"
                               >
-                                <span className="text-lg leading-none">‹</span>
+                                <span className="text-lg leading-none">&lt;</span>
                               </button>
 
                               <button
@@ -545,7 +600,7 @@ export default function Listings() {
                                 className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/82 text-slate-900 shadow-sm backdrop-blur-xl transition hover:bg-white sm:right-4"
                                 aria-label="Next image"
                               >
-                                <span className="text-lg leading-none">›</span>
+                                <span className="text-lg leading-none">&gt;</span>
                               </button>
                             </>
                           )}
@@ -581,15 +636,49 @@ export default function Listings() {
                     <div>
                       <div className="mb-6 rounded-[1.75rem] border border-white/60 bg-white/72 p-6 shadow-[0_20px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-8">
                         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                          Overview
+                          Investment Perspective
                         </p>
                         <p className="mb-5 text-3xl font-semibold text-slate-900 sm:text-4xl">
                           {formatPrice(selectedProperty.price)}
                         </p>
-                        <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
-                          {selectedProperty.description}
-                        </p>
-                      </div>
+                          <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
+                            {selectedProperty.description}
+                          </p>
+                        </div>
+
+                        <div className="mb-6 rounded-[1.75rem] border border-white/60 bg-slate-900 p-6 text-white shadow-[0_20px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-8">
+                          <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-white/55">
+                            Why This Property Works
+                          </p>
+
+                          <div className="grid gap-3">
+                            {getInvestmentHighlights(selectedProperty).map((highlight) => (
+                              <div
+                                key={highlight}
+                                className="border border-white/10 bg-white/5 px-4 py-4 text-sm leading-relaxed text-white/78"
+                              >
+                                {highlight}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mb-6 rounded-[1.75rem] border border-white/60 bg-white/72 p-6 shadow-[0_20px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-8">
+                          <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                            Location Advantage
+                          </p>
+                          <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
+                            {getLocationAdvantage(selectedProperty)}
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={() => openInquiryForm('question')}
+                            className="mt-6 rounded-full bg-slate-900 px-6 py-4 text-xs font-bold uppercase tracking-[0.18em] text-white transition hover:bg-slate-800"
+                          >
+                            Ask About This Location
+                          </button>
+                        </div>
 
                       <div className="rounded-[1.75rem] border border-white/60 bg-white/72 p-6 shadow-[0_20px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-8">
                         <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
@@ -631,24 +720,35 @@ export default function Listings() {
                     <div>
                       <div className="rounded-[1.75rem] border border-white/60 bg-slate-900 p-6 text-white shadow-[0_24px_80px_rgba(15,23,42,0.16)] sm:p-8">
                         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-white/60">
-                          Take the Next Step
+                          Next Step
                         </p>
 
                         <h3 className="mb-5 font-serif text-3xl sm:text-4xl">
-                          Interested in this property?
+                          Request full details privately.
                         </h3>
 
                         <p className="mb-5 text-sm leading-relaxed text-white/80 sm:text-base">
-                          Open a quick form inside the site, add your details, and then send the prefilled draft directly through Outlook or your default mail app.
+                          For the fastest response, message Gavy on WhatsApp.
+                          You can request availability, private viewing options,
+                          rental context, and comparable opportunities.
                         </p>
 
                         <div className="mt-8 flex flex-col gap-3">
+                          <a
+                            href={buildWhatsAppPropertyLink(selectedProperty)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="rounded-full bg-white px-6 py-4 text-center text-xs font-bold uppercase tracking-[0.18em] text-slate-900 transition hover:bg-slate-100"
+                          >
+                            WhatsApp for Fastest Response
+                          </a>
+
                           <button
                             type="button"
                             onClick={() => openInquiryForm('showing')}
-                            className="rounded-full bg-white px-6 py-4 text-xs font-bold uppercase tracking-[0.18em] text-slate-900 transition hover:bg-slate-100"
+                            className="rounded-full border border-white/30 bg-white/10 px-6 py-4 text-xs font-bold uppercase tracking-[0.18em] text-white backdrop-blur-xl transition hover:bg-white/15"
                           >
-                            Schedule a Showing
+                            Schedule Private Viewing
                           </button>
 
                           <button
@@ -656,7 +756,7 @@ export default function Listings() {
                             onClick={() => openInquiryForm('question')}
                             className="rounded-full border border-white/30 bg-white/10 px-6 py-4 text-xs font-bold uppercase tracking-[0.18em] text-white backdrop-blur-xl transition hover:bg-white/15"
                           >
-                            Ask About This Property
+                            Request Full Details
                           </button>
                         </div>
                       </div>
@@ -738,7 +838,7 @@ export default function Listings() {
                     {selectedProperty.title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-slate-500">
-                    MLS {selectedProperty.mls} • {selectedProperty.area}
+                    MLS {selectedProperty.mls} | {selectedProperty.area}
                   </p>
                 </div>
 
@@ -748,7 +848,7 @@ export default function Listings() {
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:text-slate-900"
                   aria-label="Close inquiry form"
                 >
-                  <span className="text-lg leading-none">×</span>
+                  <span className="text-lg leading-none">x</span>
                 </button>
               </div>
 

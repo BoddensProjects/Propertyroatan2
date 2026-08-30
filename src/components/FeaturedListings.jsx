@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import FadeIn from './FadeIn';
 import { allProperties } from '../data/propertiesData';
@@ -17,34 +17,21 @@ function formatSqft(value) {
 }
 
 function getPropertyImages(property) {
-  if (Array.isArray(property.images) && property.images.length > 0) {
-    return property.images;
-  }
+  const images = Array.isArray(property.images)
+    ? property.images
+        .map((image) => (typeof image === 'string' ? image.trim() : ''))
+        .filter(Boolean)
+    : [];
 
-  if (property.image) {
-    return [property.image];
-  }
+  if (images.length) return images;
 
-  return [];
+  const coverImage = typeof property.image === 'string' ? property.image.trim() : '';
+  return coverImage ? [coverImage] : [];
 }
 
 function FeaturedPropertyCard({ property }) {
   const images = getPropertyImages(property);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-
-  useEffect(() => {
-    setActiveImageIndex(0);
-  }, [property.id]);
-
-  useEffect(() => {
-    if (images.length <= 1) return undefined;
-
-    const interval = window.setInterval(() => {
-      setActiveImageIndex((current) => (current + 1) % images.length);
-    }, 3800);
-
-    return () => window.clearInterval(interval);
-  }, [images]);
 
   const goPrev = (event) => {
     event.preventDefault();
@@ -60,13 +47,14 @@ function FeaturedPropertyCard({ property }) {
 
   return (
     <article className="group w-[72vw] max-w-[18.75rem] shrink-0 snap-start sm:w-[56vw] sm:max-w-[19.5rem] md:w-[41vw] md:max-w-[20.5rem] lg:w-[30vw] lg:max-w-[21rem] xl:w-[24vw] xl:max-w-[21.5rem]">
-      <div className="flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-white/60 bg-white/82 shadow-[0_14px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl transition duration-500 hover:-translate-y-1 sm:rounded-[1.5rem] xl:rounded-[1.75rem]">
+      <div className="flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-white/70 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.1)] backdrop-blur-xl transition duration-500 hover:-translate-y-1 hover:shadow-[0_26px_80px_rgba(15,23,42,0.16)] sm:rounded-[1.5rem] xl:rounded-[1.75rem]">
         <div className="relative h-40 overflow-hidden sm:h-44 md:h-44 lg:h-48 xl:h-52">
           <img
             src={images[activeImageIndex] || property.image}
             alt={property.title}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
+            decoding="async"
           />
 
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
@@ -89,7 +77,7 @@ function FeaturedPropertyCard({ property }) {
                 className="absolute left-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/82 text-slate-900 shadow-sm backdrop-blur-xl transition hover:bg-white sm:left-4 sm:h-9 sm:w-9"
                 aria-label="Previous image"
               >
-                <span className="text-lg leading-none">‹</span>
+                <span className="text-lg leading-none">&lt;</span>
               </button>
 
               <button
@@ -98,7 +86,7 @@ function FeaturedPropertyCard({ property }) {
                 className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/82 text-slate-900 shadow-sm backdrop-blur-xl transition hover:bg-white sm:right-4 sm:h-9 sm:w-9"
                 aria-label="Next image"
               >
-                <span className="text-lg leading-none">›</span>
+                <span className="text-lg leading-none">&gt;</span>
               </button>
 
               <div className="absolute bottom-12 right-3 rounded-full bg-slate-950/45 px-3 py-1 text-[0.62rem] font-bold text-white backdrop-blur-xl sm:bottom-14 sm:right-4">
@@ -109,7 +97,7 @@ function FeaturedPropertyCard({ property }) {
 
           <div className="absolute bottom-4 left-4 right-4">
             <p className="mb-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/80 sm:text-[0.72rem]">
-              MLS {property.mls}
+              {property.area} / MLS {property.mls}
             </p>
             <h3 className="line-clamp-1 font-serif text-lg text-white sm:text-xl xl:text-2xl">
               {property.title}
@@ -123,7 +111,7 @@ function FeaturedPropertyCard({ property }) {
               {formatPrice(property.price)}
             </p>
             <span className="mt-1 whitespace-nowrap text-[0.58rem] uppercase tracking-[0.16em] text-slate-400 sm:text-[0.62rem]">
-              {images.length} photos
+              Curated
             </span>
           </div>
 
@@ -135,7 +123,21 @@ function FeaturedPropertyCard({ property }) {
             {property.description}
           </p>
 
-          <div className="mb-5 grid grid-cols-2 gap-2 rounded-2xl bg-slate-50/90 p-3 text-slate-700 sm:gap-3 sm:p-4">
+          <div className="mb-4 flex flex-wrap gap-2">
+            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-slate-500">
+              {property.area}
+            </span>
+            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-slate-500">
+              {property.propertyType}
+            </span>
+            {property.waterfront && (
+              <span className="rounded-full border border-sky-100 bg-sky-50 px-3 py-1 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-sky-700">
+                Coastal
+              </span>
+            )}
+          </div>
+
+          <div className="mb-5 grid grid-cols-2 gap-2 rounded-2xl border border-slate-100 bg-slate-50/90 p-3 text-slate-700 sm:gap-3 sm:p-4">
             <div>
               <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-slate-400 sm:text-[0.62rem]">
                 Type
@@ -169,7 +171,7 @@ function FeaturedPropertyCard({ property }) {
             to={`/listings?mls=${property.mls}`}
             className="mt-auto inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-white transition hover:bg-slate-800 sm:text-[0.68rem]"
           >
-            View Listing
+            Request Full Details
           </Link>
         </div>
       </div>
@@ -203,7 +205,7 @@ export default function FeaturedListings() {
   return (
     <section
       id="listings"
-      className="overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f6f9fb_100%)] px-4 py-16 sm:px-6 sm:py-20 lg:py-24"
+      className="overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f6f9fb_52%,#eef4f6_100%)] px-4 py-16 sm:px-6 sm:py-20 lg:py-24"
     >
       <style>{`
         .hide-scroll::-webkit-scrollbar { display: none; }
@@ -215,20 +217,19 @@ export default function FeaturedListings() {
           <div className="flex shrink-0 flex-col justify-center lg:w-[26%] xl:w-1/4">
             <FadeIn>
               <div className="mx-auto max-w-xl text-center lg:mx-0 lg:text-left">
+                <div className="mb-8 hidden h-28 w-px bg-gradient-to-b from-slate-900/60 to-transparent lg:block" />
                 <p className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-500 sm:text-xs">
-                  Featured Collection
+                  Featured Properties
                 </p>
 
                 <h2 className="mb-4 font-serif text-4xl leading-tight text-slate-900 sm:text-5xl">
-                  In the
-                  <br />
-                  spotlight
+                  Curated like a private portfolio.
                 </h2>
 
                 <p className="mb-8 text-sm leading-relaxed text-slate-600 sm:text-base">
-                  Explore a curated selection of standout Roatan properties, from
-                  ocean-view land to luxury beachfront homes and investment
-                  opportunities.
+                  Hand-selected opportunities representing the best value,
+                  location, and lifestyle on the island, with the next step designed
+                  around a private conversation.
                 </p>
 
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-center lg:flex-col lg:items-start lg:justify-start">
@@ -236,7 +237,7 @@ export default function FeaturedListings() {
                     to="/listings"
                     className="group inline-flex items-center justify-center gap-4 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-900 transition-colors hover:text-slate-500 sm:text-xs lg:justify-start"
                   >
-                    Show me more
+                    View exclusive listings
                     <span className="h-px w-10 bg-slate-900 transition-all duration-300 group-hover:translate-x-2 group-hover:bg-slate-500 sm:w-12" />
                   </Link>
 
@@ -289,10 +290,10 @@ export default function FeaturedListings() {
               <div className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-slate-900 sm:text-xs">
-                    Active Listings
+                    Hand-Selected Opportunities
                   </p>
                   <p className="mt-2 text-sm text-slate-500">
-                    Handpicked properties currently available in Roatan
+                    Curated by value, location, lifestyle, and investment potential
                   </p>
                 </div>
 
@@ -300,7 +301,7 @@ export default function FeaturedListings() {
                   to="/listings"
                   className="inline-flex text-[0.68rem] font-bold uppercase tracking-[0.2em] text-slate-500 transition hover:text-slate-900 sm:text-xs"
                 >
-                  View all
+                  Explore listings
                 </Link>
               </div>
 

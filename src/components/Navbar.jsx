@@ -4,10 +4,11 @@ import logo from '../assets/logo.png';
 
 const navItems = [
   { label: 'Home', to: '/' },
-  { label: 'About', to: '/about' },
+  { label: 'Buy', to: '/buy' },
+  { label: 'Sell', to: '/sell' },
   { label: 'Listings', to: '/listings' },
   { label: 'FAQ', to: '/faq' },
-  { label: 'Contact', to: '/contact' },
+  { label: 'About', to: '/about' },
 ];
 
 export default function Navbar() {
@@ -20,6 +21,16 @@ export default function Navbar() {
 
   const isHomePage = location.pathname === '/';
   const isHeroTop = isHomePage && !isScrolled;
+  const normalizedPath =
+    location.pathname !== '/' ? location.pathname.replace(/\/$/, '') : '/';
+  const currentLocation = `${normalizedPath}${location.search}`;
+
+  const activeNavItem =
+    navItems.find((item) => item.to === currentLocation) ||
+    navItems.find((item) => item.to === normalizedPath) ||
+    null;
+
+  const isNavItemActive = (item) => activeNavItem?.to === item.to;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,10 +45,15 @@ export default function Navbar() {
 
   useLayoutEffect(() => {
     const updatePill = () => {
-      const activeLink = linkRefs.current[location.pathname];
+      const activeLink = activeNavItem ? linkRefs.current[activeNavItem.to] : null;
       const nav = navRef.current;
 
-      if (!activeLink || !nav) return;
+      if (!nav) return;
+
+      if (!activeLink) {
+        setPillStyle({ left: 0, width: 0, opacity: 0 });
+        return;
+      }
 
       const navRect = nav.getBoundingClientRect();
       const linkRect = activeLink.getBoundingClientRect();
@@ -52,24 +68,31 @@ export default function Navbar() {
     updatePill();
     window.addEventListener('resize', updatePill);
     return () => window.removeEventListener('resize', updatePill);
-  }, [location.pathname]);
-
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location.pathname]);
+  }, [activeNavItem, normalizedPath, location.search]);
 
   return (
     <header className="fixed left-0 right-0 top-0 z-50">
       <div
-        className={`w-full rounded-b-[1.75rem] border-b transition-all duration-500 sm:rounded-b-[2rem] ${
+        className={`w-full border-b transition-all duration-500 ${
           isHeroTop
-            ? 'border-white/35 bg-white/18 shadow-none backdrop-blur-xl'
-            : 'border-white/70 bg-white/88 shadow-[0_16px_50px_rgba(15,23,42,0.12)] backdrop-blur-2xl'
+            ? 'border-white/25 bg-slate-950/18 shadow-none backdrop-blur-xl'
+            : 'border-white/70 bg-white/92 shadow-[0_16px_50px_rgba(15,23,42,0.12)] backdrop-blur-2xl'
         }`}
       >
+        <div
+          className={`hidden border-b px-4 py-2 text-center text-[0.62rem] font-bold uppercase tracking-[0.22em] transition-colors duration-500 sm:block ${
+            isHeroTop
+              ? 'border-white/15 text-white/72'
+              : 'border-slate-100 text-slate-500'
+          }`}
+        >
+          Roatan Real Estate Advisory / Luxury Property Representation
+        </div>
+
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <NavLink
             to="/"
+            onClick={() => setIsMenuOpen(false)}
             className="flex min-w-0 items-center gap-3"
             aria-label="Property Roatan home"
           >
@@ -131,12 +154,13 @@ export default function Navbar() {
               <NavLink
                 key={item.to}
                 to={item.to}
+                onClick={() => setIsMenuOpen(false)}
                 ref={(node) => {
                   linkRefs.current[item.to] = node;
                 }}
-                className={({ isActive }) =>
+                className={() =>
                   `relative z-10 rounded-full px-5 py-3 transition-colors duration-300 ${
-                    isActive
+                    isNavItemActive(item)
                       ? 'text-slate-900'
                       : isHeroTop
                         ? 'text-white/88 hover:text-white'
@@ -151,13 +175,14 @@ export default function Navbar() {
 
           <NavLink
             to="/contact"
+            onClick={() => setIsMenuOpen(false)}
             className={`hidden rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[0.18em] transition-all duration-500 xl:inline-flex ${
               isHeroTop
                 ? 'border border-white/55 bg-white/18 text-white backdrop-blur-xl hover:bg-white/28'
                 : 'bg-slate-900 text-white hover:bg-slate-800'
             }`}
           >
-            Talk to Gavy
+            Private Consultation
           </NavLink>
 
           <button
@@ -209,9 +234,10 @@ export default function Navbar() {
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  className={({ isActive }) =>
+                  onClick={() => setIsMenuOpen(false)}
+                  className={() =>
                     `flex items-center justify-between rounded-2xl px-4 py-4 text-sm font-bold uppercase tracking-[0.18em] transition-all ${
-                      isActive
+                      isNavItemActive(item)
                         ? 'bg-slate-900 text-white shadow-sm'
                         : isHeroTop
                           ? 'text-white/92 hover:bg-white/15 hover:text-white'
@@ -226,9 +252,10 @@ export default function Navbar() {
 
               <NavLink
                 to="/contact"
+                onClick={() => setIsMenuOpen(false)}
                 className="mt-2 flex items-center justify-center rounded-2xl bg-slate-900 px-4 py-4 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-slate-800"
               >
-                Talk to Gavy
+                Private Consultation
               </NavLink>
             </nav>
           </div>

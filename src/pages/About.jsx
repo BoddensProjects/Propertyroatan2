@@ -5,27 +5,27 @@ import gabbyImage from '../assets/gabby.png';
 const highlights = [
   'International Buyers',
   'RENE Certified',
+  'Native Roatan Advisor',
   'Roatan Market Knowledge',
-  'Personalized Guidance',
 ];
 
 const values = [
   {
-    title: 'Market Knowledge',
-    text: 'Local insight across beachfront homes, investment lots, condos, and island communities.',
+    title: 'Property Roatan',
+    text: 'A focused island real estate brand built around clear guidance, curated opportunities, and thoughtful client support.',
   },
   {
-    title: 'Client Advocacy',
-    text: 'Clear guidance, honest communication, and strong negotiation from search to closing.',
+    title: 'Gavy Hernandez',
+    text: 'A native Roatan advisor who blends client-focused service, local pride, and real estate process knowledge.',
   },
   {
-    title: 'Island Lifestyle Expertise',
-    text: 'Support that goes beyond property details into lifestyle, location, and long-term fit.',
+    title: 'Island Strategy',
+    text: 'Support that goes beyond property details into lifestyle fit, location, access, investment potential, and long-term use.',
   },
 ];
 
 const stats = [
-  { value: 'NAR', label: 'Member' },
+  { value: '12+', label: 'Combined Years' },
   { value: 'RENE', label: 'Certified' },
   { value: 'Roatan', label: 'Focused' },
   { value: '1:1', label: 'Service' },
@@ -43,12 +43,14 @@ export default function About() {
               </p>
 
               <h1 className="mb-4 max-w-4xl font-serif text-4xl leading-[1.05] tracking-wide text-slate-900 sm:text-5xl md:text-6xl xl:text-7xl">
-                Real estate guidance shaped by trust, taste, and local expertise.
+                Meet Gavy and the Property Roatan approach.
               </h1>
 
               <p className="mb-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg md:text-xl">
-                Property Roatan offers a thoughtful, attentive real estate experience
-                for clients buying, selling, or investing on the island.
+                Property Roatan is built for buyers and sellers who want more than
+                a list of properties. Led by Gavy Hernandez, the goal is clear
+                advice, local context, and a smoother path through one of the
+                Caribbean's most unique markets.
               </p>
 
               <div className="mb-6 flex flex-wrap gap-2">
@@ -104,18 +106,25 @@ export default function About() {
               </p>
 
               <h2 className="mb-4 font-serif text-3xl leading-tight sm:text-4xl lg:text-5xl">
-                A modern island real estate advisor with a people-first approach.
+                A Roatan native helping clients turn island dreams into reality.
               </h2>
 
               <div className="grid gap-3 text-sm leading-relaxed text-white/80 sm:text-base">
                 <p>
-                  Gavy Hernandez is a licensed realtor and certified Real Estate
-                  Negotiation Expert focused on making buying and selling in Roatan
-                  feel clear, elevated, and personal.
+                  Gavy Hernandez is a licensed realtor, certified Real Estate
+                  Negotiation Expert, and Roatan native whose passion for her
+                  homeland shaped her desire for real estate from an early age.
                 </p>
                 <p>
-                  She serves both international and local clients with professional
-                  standards, local perspective, and thoughtful guidance.
+                  With over 12 combined years across licensed real estate,
+                  administrative sales, and closings, she understands the full life
+                  cycle of island real estate and helps clients move efficiently,
+                  strategically, and with confidence.
+                </p>
+                <p>
+                  She has worked with local and international investors, first-time
+                  buyers, repeat clients, and sellers who want a smoother, more
+                  informed experience on the island.
                 </p>
               </div>
             </div>
@@ -154,7 +163,7 @@ export default function About() {
 
                   <p className="max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base lg:text-lg">
                     The goal is to understand your vision, guide you with honesty,
-                    and help you move forward with clarity in one of the Caribbean’s
+                    and help you move forward with clarity in one of the Caribbean's
                     most beautiful markets.
                   </p>
                 </div>

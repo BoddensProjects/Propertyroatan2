@@ -16,12 +16,14 @@ export default function FadeIn({ children }) {
       });
     });
     
-    if (domRef.current) {
-      observer.observe(domRef.current);
+    const element = domRef.current;
+
+    if (element) {
+      observer.observe(element);
     }
     
     return () => {
-      if (domRef.current) observer.unobserve(domRef.current);
+      if (element) observer.unobserve(element);
     };
   }, []);
 

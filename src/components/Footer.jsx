@@ -3,8 +3,11 @@ import logo from '../assets/logo.png';
 
 const navLinks = [
   { label: 'Home', to: '/' },
-  { label: 'About', to: '/about' },
+  { label: 'Buy', to: '/buy' },
+  { label: 'Sell', to: '/sell' },
   { label: 'Listings', to: '/listings' },
+  { label: 'FAQ', to: '/faq' },
+  { label: 'About', to: '/about' },
   { label: 'Contact', to: '/contact' },
 ];
 
@@ -33,14 +36,14 @@ export default function Footer() {
                     Property Roatan
                   </p>
                   <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-slate-500">
-                    Roatan Real Estate
+                    Luxury & Investment Real Estate
                   </p>
                 </div>
               </Link>
 
               <p className="mt-6 max-w-md text-sm leading-relaxed text-slate-600 sm:text-base">
-                Personalized real estate guidance in Roatan for buyers, sellers,
-                and investors looking for the right property and the right support.
+                Roatan Real Estate Advisory. Luxury property representation
+                across the Bay Islands of Honduras.
               </p>
             </div>
 

@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import { allProperties } from '../data/propertiesData';
 
@@ -12,8 +13,22 @@ const inquiryTypes = [
 
 export default function Contact() {
   const formRef = useRef(null);
+  const [searchParams] = useSearchParams();
   const [sending, setSending] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
+  const intent = searchParams.get('intent');
+  const isInvestmentIntent = intent === 'investment-guide' || intent === 'buyer-brief';
+  const isSellerIntent = intent === 'seller';
+  const defaultInquiryType = isSellerIntent
+    ? 'Selling a Property'
+    : isInvestmentIntent
+      ? 'Investment Question'
+      : 'General Inquiry';
+  const messagePlaceholder = isSellerIntent
+    ? 'Tell Gavy about the property you are considering selling, where it is located, and your ideal timeline.'
+    : isInvestmentIntent
+    ? 'Tell Gavy if you are investing, relocating, or buying a vacation home. Include budget range, preferred area, timeline, and whether rental income matters.'
+    : "Tell Gavy your goal, budget range, preferred area, timeline, and which property caught your eye.";
 
   const propertyOptions = useMemo(() => {
     return [...allProperties]
@@ -32,6 +47,24 @@ export default function Contact() {
     setSending(true);
     setStatusMessage('');
 
+    const formData = new FormData(formRef.current);
+    const honeypot = formData.get('company');
+
+    if (honeypot) {
+      setSending(false);
+      setStatusMessage('Message sent successfully.');
+      formRef.current.reset();
+      return;
+    }
+
+    const lastSentAt = Number(localStorage.getItem('propertyRoatanLastContactAt') || 0);
+
+    if (Date.now() - lastSentAt < 30000) {
+      setSending(false);
+      setStatusMessage('Please wait a moment before sending another message.');
+      return;
+    }
+
     const timeField = formRef.current.querySelector('input[name="time"]');
     if (timeField) {
       timeField.value = new Date().toLocaleString();
@@ -48,6 +81,7 @@ export default function Contact() {
       );
 
       setStatusMessage('Message sent successfully.');
+      localStorage.setItem('propertyRoatanLastContactAt', String(Date.now()));
       formRef.current.reset();
     } catch (error) {
       console.error('EmailJS error:', error);
@@ -68,12 +102,12 @@ export default function Contact() {
               </p>
 
               <h1 className="mb-5 font-serif text-4xl leading-tight sm:text-5xl lg:text-6xl">
-                Let’s talk about your next move in Roatan.
+                Start with the right Roatan conversation.
               </h1>
 
               <p className="max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
-                Whether you are buying, investing, scheduling a showing, or just
-                starting to explore, this is the easiest way to reach out with clarity.
+                Share your goal, budget range, preferred area, and timeline.
+                Gavy can then send the most relevant options instead of a generic list.
               </p>
             </div>
 
@@ -100,12 +134,31 @@ export default function Contact() {
                   Showings, property questions, investment conversations, and guidance for buyers coming to Roatan from abroad.
                 </p>
               </div>
+
+              <a
+                href="https://wa.me/50432377727?text=Hi%20Gavy%2C%20I%27m%20interested%20in%20Roatan%20real%20estate.%20My%20goal%20is%3A%20investment%2C%20relocation%2C%20or%20vacation%20home.%20My%20budget%20range%20is%3A%20____.%20Preferred%20area%3A%20____."
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-white px-6 py-4 text-xs font-bold uppercase tracking-[0.18em] text-slate-900 transition hover:bg-slate-100"
+              >
+                WhatsApp Gavy Directly
+              </a>
             </div>
           </div>
 
           <div className="rounded-[2rem] border border-white/60 bg-white/72 p-6 shadow-[0_20px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl sm:p-8 lg:p-10">
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
               <input type="hidden" name="time" />
+              <div className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden">
+                <label htmlFor="company">Company</label>
+                <input
+                  id="company"
+                  type="text"
+                  name="company"
+                  tabIndex="-1"
+                  autoComplete="off"
+                />
+              </div>
 
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
@@ -154,7 +207,7 @@ export default function Contact() {
                   </label>
                   <select
                     name="inquiry_type"
-                    defaultValue="General Inquiry"
+                    defaultValue={defaultInquiryType}
                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-400"
                   >
                     {inquiryTypes.map((type) => (
@@ -193,7 +246,7 @@ export default function Contact() {
                   rows="7"
                   required
                   className="w-full rounded-[1.5rem] border border-slate-200 bg-white px-4 py-4 text-sm leading-relaxed text-slate-800 outline-none transition focus:border-slate-400"
-                  placeholder="Tell us what you're looking for, what area you like, or which property caught your eye."
+                  placeholder={messagePlaceholder}
                 />
               </div>
 
